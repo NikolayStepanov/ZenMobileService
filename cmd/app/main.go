@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "ZenMobileService/internal/app"
 
 func main() {
-	fmt.Println("Hello")
+	app.Run()
 }
