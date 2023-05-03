@@ -12,15 +12,15 @@ type ServicesDependencies struct {
 	Cache MemoryCache
 }
 
-type CacheServices interface {
+type CacheServicer interface {
 	IncrementValueByKey(ctx context.Context, key string, incrementValue int64) (int64, error)
 }
 
 type Services struct {
-	CacheServices CacheServices
+	CacheService CacheServicer
 }
 
 func NewServices(deps ServicesDependencies) *Services {
 	cacheService := NewCacheService(deps.Cache)
-	return &Services{CacheServices: cacheService}
+	return &Services{CacheService: cacheService}
 }

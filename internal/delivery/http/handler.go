@@ -1,17 +1,18 @@
 package http
 
 import (
+	"ZenMobileService/internal/service"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
-	"net/http"
 )
 
 type Handler struct {
+	cache service.CacheServicer
 }
 
-func NewHandler() *Handler {
-	return &Handler{}
+func NewHandler(cacheService service.CacheServicer) *Handler {
+	return &Handler{cache: cacheService}
 }
 
 func (h *Handler) Init() *chi.Mux {
@@ -26,9 +27,5 @@ func (h *Handler) Init() *chi.Mux {
 }
 
 func (h *Handler) MountRoutes(router *chi.Mux) {
-	router.Get("/", h.handleConnection)
-}
-
-func (h *Handler) handleConnection(w http.ResponseWriter, r *http.Request) {
-	render.HTML(w, r, "Hello")
+	router.Mount("/redis", h.initRedisRoutes())
 }
