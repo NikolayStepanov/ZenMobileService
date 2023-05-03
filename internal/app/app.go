@@ -25,6 +25,7 @@ func Run(configPath string) {
 	log.Println(cfg.Redis.Password)
 	redisCache.Set(ctx, "age", 27)
 	log.Println(redisCache.Get(ctx, "age"))
+	log.Println(redisCache.IncrementBy(ctx, "age", 10))
 	wg := sync.WaitGroup{}
 	handlers := httpDelivery.NewHandler()
 	//HTTP Server
