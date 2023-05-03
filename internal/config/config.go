@@ -15,7 +15,7 @@ type (
 	RedisConfig struct {
 		Host     string `mapstructure:"host"`
 		Port     string `mapstructure:"port"`
-		Password string `mapstructure:"port"`
+		Password string `mapstructure:"password"`
 	}
 )
 
@@ -24,6 +24,7 @@ func (cfg *Config) Init(path string) error {
 		log.Error(err)
 		return err
 	}
+
 	if err := parseEnv(); err != nil {
 		log.Error(err)
 		return err

@@ -4,6 +4,7 @@ import (
 	"ZenMobileService/internal/config"
 	httpDelivery "ZenMobileService/internal/delivery/http"
 	"ZenMobileService/internal/server"
+	"ZenMobileService/internal/service/redis"
 	"context"
 	log "github.com/sirupsen/logrus"
 	"os/signal"
@@ -16,9 +17,14 @@ func Run(configPath string) {
 	defer cancel()
 	cfg := new(config.Config)
 	cfg.Init(configPath)
+
+	redisCache := redis.NewRedisCache(cfg)
+	//services := service.NewServices(service.ServicesDependencies{Cache: redisCache})
 	log.Println(cfg.Redis.Port)
 	log.Println(cfg.Redis.Host)
 	log.Println(cfg.Redis.Password)
+	redisCache.Set(ctx, "age", 27)
+	log.Println(redisCache.Get(ctx, "age"))
 	wg := sync.WaitGroup{}
 	handlers := httpDelivery.NewHandler()
 	//HTTP Server
