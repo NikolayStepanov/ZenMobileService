@@ -1,18 +1,24 @@
 package app
 
 import (
+	"ZenMobileService/internal/config"
 	httpDelivery "ZenMobileService/internal/delivery/http"
 	"ZenMobileService/internal/server"
 	"context"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"os/signal"
 	"sync"
 	"syscall"
 )
 
-func Run() {
+func Run(configPath string) {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	defer cancel()
+	cfg := new(config.Config)
+	cfg.Init(configPath)
+	log.Println(cfg.Redis.Port)
+	log.Println(cfg.Redis.Host)
+	log.Println(cfg.Redis.Password)
 	wg := sync.WaitGroup{}
 	handlers := httpDelivery.NewHandler()
 	//HTTP Server
