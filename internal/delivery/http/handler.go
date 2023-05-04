@@ -1,10 +1,12 @@
 package http
 
 import (
+	_ "ZenMobileService/docs"
 	"ZenMobileService/internal/service"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Handler struct {
@@ -28,4 +30,7 @@ func (h *Handler) Init() *chi.Mux {
 
 func (h *Handler) MountRoutes(router *chi.Mux) {
 	router.Mount("/redis", h.initRedisRoutes())
+	router.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
+	))
 }

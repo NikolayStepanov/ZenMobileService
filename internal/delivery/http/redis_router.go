@@ -20,7 +20,7 @@ type ValueResponse struct {
 	Value any `json:"value"`
 }
 
-type PutValueRequest struct {
+type SaveValueRequest struct {
 	Key   string `json:"key"`
 	Value any    `json:"value"`
 }
@@ -28,11 +28,20 @@ type PutValueRequest struct {
 func (h *Handler) initRedisRoutes() *chi.Mux {
 	redisRouter := chi.NewRouter()
 	redisRouter.Post("/incr", h.IncrementValueByKey)
-	redisRouter.Put("/", h.PutValueByKey)
-	redisRouter.Get("/{key}", h.GetValueByKey)
+	redisRouter.Post("/", h.SaveValueByKey)
+	redisRouter.Get("/{key}", h.ReadValueByKey)
 	return redisRouter
 }
 
+// @Summary IncrementValueByKey
+// @Description Increment value by key if value is stored in redis
+// @Tags Redis
+// @Accept json
+// @Produce json
+// @Param input body IncrementRequest true "json request: increment value by key"
+// @Success 200 {object} ValueIncrementResponse
+// @Failure 400 {object} ErrResponse
+// @Router /redis/incr [post]
 func (h *Handler) IncrementValueByKey(w http.ResponseWriter, r *http.Request) {
 	err := error(nil)
 	incrRequest := IncrementRequest{}
@@ -49,24 +58,41 @@ func (h *Handler) IncrementValueByKey(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, valueResponse)
 }
 
-func (h *Handler) PutValueByKey(w http.ResponseWriter, r *http.Request) {
+// @Summary SaveValueByKey
+// @Description Saving a new key with a value
+// @Tags Redis
+// @Accept json
+// @Produce html
+// @Param input body SaveValueRequest true "json request: save value"
+// @Success 200 {string} string
+// @Failure 400 {object} ErrResponse
+// @Router /redis/ [post]
+func (h *Handler) SaveValueByKey(w http.ResponseWriter, r *http.Request) {
 	err := error(nil)
-	putValueRequest := PutValueRequest{}
+	createValueRequest := SaveValueRequest{}
 	messageResponse := ""
 
-	render.Decode(r, &putValueRequest)
-	err = h.cache.SetValueByKey(r.Context(), putValueRequest.Key, putValueRequest.Value)
+	render.Decode(r, &createValueRequest)
+	err = h.cache.SetValueByKey(r.Context(), createValueRequest.Key, createValueRequest.Value)
 	if err != nil {
 		render.Render(w, r, ErrInvalidRequest(err))
 		return
 	}
-	messageResponse = fmt.Sprintf("Key = %s Value = %v put in Redis", putValueRequest.Key, putValueRequest.Value)
+	messageResponse = fmt.Sprintf("Key = %s Value = %v saved in Redis", createValueRequest.Key, createValueRequest.Value)
 
 	render.Status(r, http.StatusOK)
 	render.HTML(w, r, messageResponse)
 }
 
-func (h *Handler) GetValueByKey(w http.ResponseWriter, r *http.Request) {
+// @Summary ReadValueByKey
+// @Description Getting value by key
+// @Tags Redis
+// @Produce json
+// @Param key path string true "key"
+// @Success 200 {object} ValueResponse
+// @Failure 400 {object} ErrResponse
+// @Router /redis/{key} [get]
+func (h *Handler) ReadValueByKey(w http.ResponseWriter, r *http.Request) {
 	var value any
 	err := error(nil)
 	valueResponse := ValueResponse{}
