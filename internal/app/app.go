@@ -19,7 +19,10 @@ func Run(configPath string) {
 	cfg := new(config.Config)
 	cfg.Init(configPath)
 
-	redisCache := redis.NewRedisCache(cfg)
+	redisCache, err := redis.NewRedisCache(cfg)
+	if err != nil {
+		log.Error(err)
+	}
 	services := service.NewServices(service.ServicesDependencies{Cache: redisCache})
 	handlers := httpDelivery.NewHandler(services.CacheService)
 

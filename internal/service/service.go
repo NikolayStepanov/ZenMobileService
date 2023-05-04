@@ -14,6 +14,8 @@ type ServicesDependencies struct {
 
 type CacheServicer interface {
 	IncrementValueByKey(ctx context.Context, key string, incrementValue int64) (int64, error)
+	SetValueByKey(ctx context.Context, key string, value any) error
+	GetValueByKey(ctx context.Context, key string) (any, error)
 }
 
 type Services struct {
