@@ -38,8 +38,8 @@ type ValueResponse struct {
 	Value any `json:"value"`
 }
 
-func validateSaveReq(reqIncr *SaveValueRequest) error {
-	err := validateKeyParam(reqIncr.Key)
+func validateSaveReq(reqSave *SaveValueRequest) error {
+	err := validateKeyParam(reqSave.Key)
 	if err != nil {
 		return err
 	}
