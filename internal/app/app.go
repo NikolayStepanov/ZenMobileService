@@ -32,7 +32,7 @@ func Run(configPath string) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		if err := srv.Run(); err != nil {
+		if err = srv.Run(); err != nil {
 			log.Printf("error occurred while running http server: %s\n", err.Error())
 		}
 	}()
