@@ -2,6 +2,8 @@ package service
 
 import "context"
 
+//go:generate mockgen -source=internal/service/service.go
+
 type MemoryCache interface {
 	Set(ctx context.Context, key string, value any) error
 	Get(ctx context.Context, key string) (any, error)

@@ -16,8 +16,8 @@ const (
 )
 
 var (
-	ErrEmptyKey   = errors.New("key can't be empty")
-	ErrEmptyValue = errors.New("value can't be empty")
+	ErrEmptyKey            = errors.New("key can't be empty")
+	ErrEmptyIncrementValue = errors.New("value can't be empty")
 )
 
 type IncrementRequest struct {
@@ -50,6 +50,9 @@ func validateIncrementReq(reqIncr *IncrementRequest) error {
 	err := validateKeyParam(reqIncr.Key)
 	if err != nil {
 		return err
+	}
+	if reqIncr.Value == 0 {
+		return ErrEmptyIncrementValue
 	}
 	return nil
 }
