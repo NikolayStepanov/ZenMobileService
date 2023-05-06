@@ -15,86 +15,86 @@ func TestValidateIncrementRequest(t *testing.T) {
 }
 
 func TestValidateIncrementRequestError(t *testing.T) {
-	cases := []struct {
-		name   string
-		in     *IncrementRequest
-		expErr error
+	tests := []struct {
+		name          string
+		input         *IncrementRequest
+		expectedError error
 	}{
 		{
 			name: "bad_key",
-			in: &IncrementRequest{
+			input: &IncrementRequest{
 				Key: "",
 			},
-			expErr: ErrEmptyKey,
+			expectedError: ErrEmptyKey,
 		},
 		{
 			name: "bad_value",
-			in: &IncrementRequest{
+			input: &IncrementRequest{
 				Key:   "age",
 				Value: 0,
 			},
-			expErr: ErrEmptyIncrementValue,
+			expectedError: ErrEmptyIncrementValue,
 		},
 	}
-	for _, tCase := range cases {
-		t.Run(tCase.name, func(t *testing.T) {
-			err := validateIncrementReq(tCase.in)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			err := validateIncrementReq(test.input)
 			require.Error(t, err)
-			require.EqualError(t, tCase.expErr, err.Error())
+			require.EqualError(t, test.expectedError, err.Error())
 		})
 	}
 }
 
 func TestValidateSaveRequest(t *testing.T) {
-	cases := []struct {
-		name   string
-		in     *SaveValueRequest
-		expErr error
+	tests := []struct {
+		name          string
+		input         *SaveValueRequest
+		expectedError error
 	}{
 		{
 			name: "valid int value",
-			in: &SaveValueRequest{
+			input: &SaveValueRequest{
 				Key:   "age",
 				Value: 10,
 			},
-			expErr: nil,
+			expectedError: nil,
 		},
 		{
 			name: "valid string value",
-			in: &SaveValueRequest{
+			input: &SaveValueRequest{
 				Key:   "string",
 				Value: "string",
 			},
-			expErr: nil,
+			expectedError: nil,
 		},
 	}
-	for _, tCase := range cases {
-		t.Run(tCase.name, func(t *testing.T) {
-			err := validateSaveReq(tCase.in)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			err := validateSaveReq(test.input)
 			require.NoError(t, err)
 		})
 	}
 }
 
 func TestValidateSaveRequestError(t *testing.T) {
-	cases := []struct {
-		name   string
-		in     *SaveValueRequest
-		expErr error
+	tests := []struct {
+		name          string
+		input         *SaveValueRequest
+		expectedError error
 	}{
 		{
 			name: "bad_key",
-			in: &SaveValueRequest{
+			input: &SaveValueRequest{
 				Key: "",
 			},
-			expErr: ErrEmptyKey,
+			expectedError: ErrEmptyKey,
 		},
 	}
-	for _, tCase := range cases {
-		t.Run(tCase.name, func(t *testing.T) {
-			err := validateSaveReq(tCase.in)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			err := validateSaveReq(test.input)
 			require.Error(t, err)
-			require.EqualError(t, tCase.expErr, err.Error())
+			require.EqualError(t, test.expectedError, err.Error())
 		})
 	}
 }

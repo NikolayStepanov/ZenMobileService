@@ -18,6 +18,10 @@ const (
 var (
 	ErrEmptyKey            = errors.New("key can't be empty")
 	ErrEmptyIncrementValue = errors.New("value can't be empty")
+	ErrInvalidInput        = errors.New("invalid input body")
+	ErrIncrementValue      = errors.New("can't increment value by key")
+	ErrSave                = errors.New("can't save value by key")
+	ErrRead                = errors.New("can't read value by key")
 )
 
 type IncrementRequest struct {
@@ -73,7 +77,7 @@ func (h *Handler) initRedisRoutes() *chi.Mux {
 }
 
 // @Summary IncrementValueByKey
-// @Description Increment value by key if value is stored in redis
+// @Description Increment value by key if value is stored input redis
 // @Tags Redis
 // @Accept json
 // @Produce json
@@ -88,14 +92,14 @@ func (h *Handler) IncrementValueByKey(w http.ResponseWriter, r *http.Request) {
 
 	err = render.Decode(r, incrRequest)
 	if err != nil {
-		log.Errorf("can't parse req: %s", err.Error())
-		render.Render(w, r, ErrInvalidRequest(err))
+		log.Errorf("can't parse request: %s", err.Error())
+		render.Render(w, r, ErrInvalidRequest(ErrInvalidInput))
 		return
 	}
 
 	err = validateIncrementReq(incrRequest)
 	if err != nil {
-		log.Errorf("bad req: %v: %s", incrRequest, err.Error())
+		log.Errorf("bad request: %v: %s", incrRequest, err.Error())
 		render.Render(w, r, ErrInvalidRequest(err))
 		return
 	}
@@ -103,7 +107,7 @@ func (h *Handler) IncrementValueByKey(w http.ResponseWriter, r *http.Request) {
 	valueResponse.Value, err = h.cache.IncrementValueByKey(r.Context(), incrRequest.Key, incrRequest.Value)
 	if err != nil {
 		log.Errorf("redis: can't increment value by key: %v: %s", incrRequest, err.Error())
-		render.Render(w, r, ErrInvalidRequest(err))
+		render.Render(w, r, ErrInvalidRequest(ErrIncrementValue))
 		return
 	}
 
@@ -128,7 +132,7 @@ func (h *Handler) SaveValueByKey(w http.ResponseWriter, r *http.Request) {
 	err = render.Decode(r, &saveValueRequest)
 	if err != nil {
 		log.Errorf("can't parse req: %s", err.Error())
-		render.Render(w, r, ErrInvalidRequest(err))
+		render.Render(w, r, ErrInvalidRequest(ErrInvalidInput))
 		return
 	}
 
@@ -142,10 +146,10 @@ func (h *Handler) SaveValueByKey(w http.ResponseWriter, r *http.Request) {
 	err = h.cache.SetValueByKey(r.Context(), saveValueRequest.Key, saveValueRequest.Value)
 	if err != nil {
 		log.Errorf("redis: can't save value by key: %v: %s", saveValueRequest, err.Error())
-		render.Render(w, r, ErrInvalidRequest(err))
+		render.Render(w, r, ErrInvalidRequest(ErrSave))
 		return
 	}
-	messageResponse = fmt.Sprintf("Key = %s Value = %v saved in Redis", saveValueRequest.Key, saveValueRequest.Value)
+	messageResponse = fmt.Sprintf("Key = %s Value = %v saved input Redis", saveValueRequest.Key, saveValueRequest.Value)
 
 	render.Status(r, http.StatusOK)
 	render.HTML(w, r, messageResponse)
@@ -164,16 +168,18 @@ func (h *Handler) ReadValueByKey(w http.ResponseWriter, r *http.Request) {
 	err := error(nil)
 	valueResponse := &ValueResponse{}
 	key := chi.URLParam(r, "key")
+
 	err = validateKeyParam(key)
 	if err != nil {
-		log.Errorf("redis: can't read value by key: %s: %s", key, err.Error())
+		log.Errorf("bad req: %s: %s", key, err.Error())
 		render.Render(w, r, ErrInvalidRequest(err))
 		return
 	}
 
 	value, err = h.cache.GetValueByKey(r.Context(), key)
 	if err != nil {
-		render.Render(w, r, ErrInvalidRequest(err))
+		log.Errorf("redis: can't read value by key: %s: %s", key, err.Error())
+		render.Render(w, r, ErrInvalidRequest(ErrRead))
 		return
 	}
 	valueResponse.Value = value
