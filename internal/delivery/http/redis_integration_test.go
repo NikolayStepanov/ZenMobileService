@@ -80,24 +80,19 @@ func TestHandler_IncrementValueByKey(t *testing.T) {
 			defer ctl.Finish()
 
 			cacheService := mock_service.NewMockCacheServicer(ctl)
-
 			services := &service.Services{CacheService: cacheService}
-
 			test.mockBehavior(cacheService, test.inputRequest)
-
 			handler := NewHandler(services.CacheService)
-
 			router := handler.Init()
-			// Init Endpoint
+
 			router.Post(redisRoute+incrRoute, handler.IncrementValueByKey)
-			// Create Request
+
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest(http.MethodPost, redisRoute+incrRoute,
 				bytes.NewBufferString(test.inputBody))
 
-			// Make Request
 			router.ServeHTTP(w, req)
-			// Assert
+
 			assert.Equal(t, w.Code, test.expectedStatusCode)
 			assert.Equal(t, w.Body.String(), test.expectedResponseBody)
 		})
@@ -165,24 +160,19 @@ func TestHandler_SaveValueByKey(t *testing.T) {
 			defer ctl.Finish()
 
 			cacheService := mock_service.NewMockCacheServicer(ctl)
-
 			services := &service.Services{CacheService: cacheService}
-
 			test.mockBehavior(cacheService, test.inputRequest)
-
 			handler := NewHandler(services.CacheService)
-
 			router := handler.Init()
-			// Init Endpoint
+
 			router.Post(redisRoute+slash, handler.SaveValueByKey)
-			// Create Request
+
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest(http.MethodPost, redisRoute+slash,
 				bytes.NewBufferString(test.inputBody))
 
-			// Make Request
 			router.ServeHTTP(w, req)
-			// Assert
+
 			assert.Equal(t, w.Code, test.expectedStatusCode)
 			assert.Equal(t, w.Body.String(), test.expectedResponseBody)
 		})
@@ -225,23 +215,18 @@ func TestHandler_ReadValueByKey(t *testing.T) {
 			defer ctl.Finish()
 
 			cacheService := mock_service.NewMockCacheServicer(ctl)
-
 			services := &service.Services{CacheService: cacheService}
-
 			test.mockBehavior(cacheService, test.inputRequest)
-
 			handler := NewHandler(services.CacheService)
-
 			router := handler.Init()
-			// Init Endpoint
+
 			router.Get(redisRoute+getKeyRoute, handler.ReadValueByKey)
-			// Create Request
+
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest(http.MethodGet, redisRoute+slash+test.inputRequest, nil)
 
-			// Make Request
 			router.ServeHTTP(w, req)
-			// Assert
+
 			assert.Equal(t, w.Code, test.expectedStatusCode)
 			assert.Equal(t, w.Body.String(), test.expectedResponseBody)
 		})
