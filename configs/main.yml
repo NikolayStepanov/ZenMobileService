@@ -1,0 +1,4 @@
+redis:
+#  host: cache
+#  port: 6379
+  password: redis

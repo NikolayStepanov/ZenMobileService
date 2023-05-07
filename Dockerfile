@@ -14,5 +14,5 @@ ENV PORT 8080
 
 EXPOSE $PORT
 
-CMD ["./.bin/app"]
+CMD ["./.bin/app", "--host=cache", "--port=6379"]
 
