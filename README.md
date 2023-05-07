@@ -41,7 +41,7 @@
 
    Если операция сохранения значения выполнена успешно, получаете ответ такого формата:
 
-   ```json
+   ```tex
    Key = CountRegisteredUsers Value = 444 saved in Redis
    ```
 
