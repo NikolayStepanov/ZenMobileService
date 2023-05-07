@@ -121,7 +121,7 @@ func TestHandler_SaveValueByKey(t *testing.T) {
 				r.EXPECT().SetValueByKey(gomock.Any(), inputRequest.Key, inputRequest.Value).Return(nil)
 			},
 			expectedStatusCode:   200,
-			expectedResponseBody: `Key = age Value = 27 saved input Redis`,
+			expectedResponseBody: `Key = age Value = 27 saved in Redis`,
 		},
 		{
 			name:                 "InputBodyError",

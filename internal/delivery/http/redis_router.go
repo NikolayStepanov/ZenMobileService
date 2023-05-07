@@ -149,7 +149,7 @@ func (h *Handler) SaveValueByKey(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, ErrInvalidRequest(ErrSave))
 		return
 	}
-	messageResponse = fmt.Sprintf("Key = %s Value = %v saved input Redis", saveValueRequest.Key, saveValueRequest.Value)
+	messageResponse = fmt.Sprintf("Key = %s Value = %v saved in Redis", saveValueRequest.Key, saveValueRequest.Value)
 
 	render.Status(r, http.StatusOK)
 	render.HTML(w, r, messageResponse)
