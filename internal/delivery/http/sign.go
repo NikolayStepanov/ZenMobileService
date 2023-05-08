@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	hmacsha512 = "/hmacsha512"
+	hmacsha512Route = "/hmacsha512Route"
 )
 
 var (
@@ -23,7 +23,7 @@ type SignRequest struct {
 
 func (h *Handler) initSignRoutes() *chi.Mux {
 	signRouter := chi.NewRouter()
-	signRouter.Post(hmacsha512, h.SignMessage)
+	signRouter.Post(hmacsha512Route, h.SignMessage)
 	return signRouter
 }
 
@@ -45,7 +45,7 @@ func validateSignReq(signReq *SignRequest) error {
 // @Param input body SignRequest true "json request: signature text, key"
 // @Success 200 {string} string
 // @Failure 400 {object} ErrResponse
-// @Router /sign/hmacsha512 [post]
+// @Router /sign/hmacsha512Route [post]
 func (h *Handler) SignMessage(w http.ResponseWriter, r *http.Request) {
 	err := error(nil)
 	signRequest := &SignRequest{}

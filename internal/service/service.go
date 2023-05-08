@@ -1,6 +1,9 @@
 package service
 
-import "context"
+import (
+	"ZenMobileService/internal/service/sign"
+	"context"
+)
 
 type MemoryCache interface {
 	Set(ctx context.Context, key string, value any) error
@@ -30,6 +33,6 @@ type Services struct {
 
 func NewServices(deps ServicesDependencies) *Services {
 	cacheService := NewCacheService(deps.Cache)
-	signService := NewSignService()
+	signService := sign.NewSignService()
 	return &Services{CacheService: cacheService, SignService: signService}
 }
