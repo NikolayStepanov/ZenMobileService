@@ -16,12 +16,9 @@ const (
 )
 
 var (
-	ErrEmptyKey            = errors.New("key can't be empty")
-	ErrEmptyIncrementValue = errors.New("value can't be empty")
-	ErrInvalidInput        = errors.New("invalid input body")
-	ErrIncrementValue      = errors.New("can't increment value by key")
-	ErrSave                = errors.New("can't save value by key")
-	ErrRead                = errors.New("can't read value by key")
+	ErrIncrementValue = errors.New("can't increment value by key")
+	ErrSave           = errors.New("can't save value by key")
+	ErrRead           = errors.New("can't read value by key")
 )
 
 type IncrementRequest struct {
@@ -56,7 +53,7 @@ func validateIncrementReq(reqIncr *IncrementRequest) error {
 		return err
 	}
 	if reqIncr.Value == 0 {
-		return ErrEmptyIncrementValue
+		return ErrEmptyValue
 	}
 	return nil
 }
