@@ -58,7 +58,7 @@ const docTemplate = `{
         },
         "/redis/incr": {
             "post": {
-                "description": "Increment value by key if value is stored input redis",
+                "description": "Increment value by key if value is stored in redis",
                 "consumes": [
                     "application/json"
                 ],

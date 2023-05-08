@@ -96,7 +96,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Increment value by key if value is stored input redis
+      description: Increment value by key if value is stored in redis
       parameters:
       - description: 'json request: increment value by key'
         in: body

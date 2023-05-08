@@ -74,7 +74,7 @@ func (h *Handler) initRedisRoutes() *chi.Mux {
 }
 
 // @Summary IncrementValueByKey
-// @Description Increment value by key if value is stored input redis
+// @Description Increment value by key if value is stored in redis
 // @Tags Redis
 // @Accept json
 // @Produce json
