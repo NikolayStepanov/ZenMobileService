@@ -13,21 +13,21 @@ const (
 )
 
 var (
-	ErrSignatureGenerate = errors.New("can't generate signature")
+	ErrSignGenerate = errors.New("can't generate signature")
 )
 
-type SignatureRequest struct {
+type SignRequest struct {
 	Text string `json:"text"`
 	Key  string `json:"key"`
 }
 
 func (h *Handler) initSignRoutes() *chi.Mux {
 	signRouter := chi.NewRouter()
-	signRouter.Post(hmacsha512, h.SignatureMessage)
+	signRouter.Post(hmacsha512, h.SignMessage)
 	return signRouter
 }
 
-func validateSignatureReq(signReq *SignatureRequest) error {
+func validateSignReq(signReq *SignRequest) error {
 	if signReq.Text == "" {
 		return ErrEmptyText
 	}
@@ -37,9 +37,18 @@ func validateSignatureReq(signReq *SignatureRequest) error {
 	return nil
 }
 
-func (h *Handler) SignatureMessage(w http.ResponseWriter, r *http.Request) {
+// @Summary SignMessage
+// @Description Signature message
+// @Tags Signature
+// @Accept json
+// @Produce html
+// @Param input body SignRequest true "json request: signature text, key"
+// @Success 200 {string} string
+// @Failure 400 {object} ErrResponse
+// @Router /sign/hmacsha512 [post]
+func (h *Handler) SignMessage(w http.ResponseWriter, r *http.Request) {
 	err := error(nil)
-	signRequest := &SignatureRequest{}
+	signRequest := &SignRequest{}
 	valueResponse := ""
 
 	err = render.Decode(r, signRequest)
@@ -49,17 +58,17 @@ func (h *Handler) SignatureMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = validateSignatureReq(signRequest)
+	err = validateSignReq(signRequest)
 	if err != nil {
 		log.Errorf("bad request: %v: %s", signRequest, err.Error())
 		render.Render(w, r, ErrInvalidRequest(err))
 		return
 	}
 
-	valueResponse, err = h.sign.GenerateSignature(r.Context(), signRequest.Text, signRequest.Key)
+	valueResponse, err = h.services.SignService.GenerateSignature(r.Context(), signRequest.Text, signRequest.Key)
 	if err != nil {
 		log.Errorf("can't generate signature: %v: %s", signRequest, err.Error())
-		render.Render(w, r, ErrInvalidRequest(ErrSignatureGenerate))
+		render.Render(w, r, ErrInvalidRequest(ErrSignGenerate))
 		return
 	}
 

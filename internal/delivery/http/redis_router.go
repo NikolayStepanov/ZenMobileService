@@ -101,7 +101,7 @@ func (h *Handler) IncrementValueByKey(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	valueResponse.Value, err = h.cache.IncrementValueByKey(r.Context(), incrRequest.Key, incrRequest.Value)
+	valueResponse.Value, err = h.services.CacheService.IncrementValueByKey(r.Context(), incrRequest.Key, incrRequest.Value)
 	if err != nil {
 		log.Errorf("redis: can't increment value by key: %v: %s", incrRequest, err.Error())
 		render.Render(w, r, ErrInvalidRequest(ErrIncrementValue))
@@ -140,7 +140,7 @@ func (h *Handler) SaveValueByKey(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.cache.SetValueByKey(r.Context(), saveValueRequest.Key, saveValueRequest.Value)
+	err = h.services.CacheService.SetValueByKey(r.Context(), saveValueRequest.Key, saveValueRequest.Value)
 	if err != nil {
 		log.Errorf("redis: can't save value by key: %v: %s", saveValueRequest, err.Error())
 		render.Render(w, r, ErrInvalidRequest(ErrSave))
@@ -173,7 +173,7 @@ func (h *Handler) ReadValueByKey(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	value, err = h.cache.GetValueByKey(r.Context(), key)
+	value, err = h.services.CacheService.GetValueByKey(r.Context(), key)
 	if err != nil {
 		log.Errorf("redis: can't read value by key: %s: %s", key, err.Error())
 		render.Render(w, r, ErrInvalidRequest(ErrRead))

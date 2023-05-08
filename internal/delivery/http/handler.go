@@ -19,12 +19,11 @@ const (
 )
 
 type Handler struct {
-	cache service.CacheServicer
-	sign  service.SignatureServicer
+	services *service.Services
 }
 
-func NewHandler(cacheService service.CacheServicer) *Handler {
-	return &Handler{cache: cacheService}
+func NewHandler(services *service.Services) *Handler {
+	return &Handler{services: services}
 }
 
 func (h *Handler) Init() *chi.Mux {

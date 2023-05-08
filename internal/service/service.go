@@ -14,7 +14,7 @@ type ServicesDependencies struct {
 
 type SignatureServicer interface {
 	GenerateSignature(ctx context.Context, text, key string) (string, error)
-	ParseSignature(ctx context.Context, signature, key string) (string, error)
+	ValidSignature(ctx context.Context, signature, text, key string) (bool, error)
 }
 
 type CacheServicer interface {

@@ -78,6 +78,59 @@ func (mr *MockMemoryCacheMockRecorder) Set(ctx, key, value interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockMemoryCache)(nil).Set), ctx, key, value)
 }
 
+// MockSignatureServicer is a mock of SignatureServicer interface.
+type MockSignatureServicer struct {
+	ctrl     *gomock.Controller
+	recorder *MockSignatureServicerMockRecorder
+}
+
+// MockSignatureServicerMockRecorder is the mock recorder for MockSignatureServicer.
+type MockSignatureServicerMockRecorder struct {
+	mock *MockSignatureServicer
+}
+
+// NewMockSignatureServicer creates a new mock instance.
+func NewMockSignatureServicer(ctrl *gomock.Controller) *MockSignatureServicer {
+	mock := &MockSignatureServicer{ctrl: ctrl}
+	mock.recorder = &MockSignatureServicerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockSignatureServicer) EXPECT() *MockSignatureServicerMockRecorder {
+	return m.recorder
+}
+
+// GenerateSignature mocks base method.
+func (m *MockSignatureServicer) GenerateSignature(ctx context.Context, text, key string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateSignature", ctx, text, key)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateSignature indicates an expected call of GenerateSignature.
+func (mr *MockSignatureServicerMockRecorder) GenerateSignature(ctx, text, key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateSignature", reflect.TypeOf((*MockSignatureServicer)(nil).GenerateSignature), ctx, text, key)
+}
+
+// ValidSignature mocks base method.
+func (m *MockSignatureServicer) ValidSignature(ctx context.Context, signature, text, key string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ValidSignature", ctx, signature, text, key)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ValidSignature indicates an expected call of ValidSignature.
+func (mr *MockSignatureServicerMockRecorder) ValidSignature(ctx, signature, text, key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ValidSignature", reflect.TypeOf((*MockSignatureServicer)(nil).ValidSignature), ctx, signature, text, key)
+}
+
 // MockCacheServicer is a mock of CacheServicer interface.
 type MockCacheServicer struct {
 	ctrl     *gomock.Controller

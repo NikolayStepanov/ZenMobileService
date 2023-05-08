@@ -24,7 +24,7 @@ func Run(configPath string) {
 		log.Error(err)
 	}
 	services := service.NewServices(service.ServicesDependencies{Cache: redisCache})
-	handlers := httpDelivery.NewHandler(services.CacheService)
+	handlers := httpDelivery.NewHandler(services)
 
 	wg := sync.WaitGroup{}
 	//HTTP Server
