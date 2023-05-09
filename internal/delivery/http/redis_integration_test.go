@@ -82,7 +82,7 @@ func TestHandler_IncrementValueByKey(t *testing.T) {
 			cacheService := mock_service.NewMockCacheServicer(ctl)
 			services := &service.Services{CacheService: cacheService}
 			test.mockBehavior(cacheService, test.inputRequest)
-			handler := NewHandler(services.CacheService)
+			handler := NewHandler(services)
 			router := handler.Init()
 
 			router.Post(redisRoute+incrRoute, handler.IncrementValueByKey)
@@ -162,7 +162,7 @@ func TestHandler_SaveValueByKey(t *testing.T) {
 			cacheService := mock_service.NewMockCacheServicer(ctl)
 			services := &service.Services{CacheService: cacheService}
 			test.mockBehavior(cacheService, test.inputRequest)
-			handler := NewHandler(services.CacheService)
+			handler := NewHandler(services)
 			router := handler.Init()
 
 			router.Post(redisRoute+slash, handler.SaveValueByKey)
@@ -217,7 +217,7 @@ func TestHandler_ReadValueByKey(t *testing.T) {
 			cacheService := mock_service.NewMockCacheServicer(ctl)
 			services := &service.Services{CacheService: cacheService}
 			test.mockBehavior(cacheService, test.inputRequest)
-			handler := NewHandler(services.CacheService)
+			handler := NewHandler(services)
 			router := handler.Init()
 
 			router.Get(redisRoute+getKeyRoute, handler.ReadValueByKey)

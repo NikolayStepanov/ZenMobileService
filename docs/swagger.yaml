@@ -20,6 +20,13 @@ definitions:
         type: string
       value: {}
     type: object
+  http.SignRequest:
+    properties:
+      key:
+        type: string
+      text:
+        type: string
+    type: object
   http.ValueIncrementResponse:
     properties:
       value:
@@ -111,4 +118,30 @@ paths:
       summary: IncrementValueByKey
       tags:
       - Redis
+  /sign/hmacsha512:
+    post:
+      consumes:
+      - application/json
+      description: Signature message
+      parameters:
+      - description: 'json request: signature text, key'
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.SignRequest'
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: SignMessage
+      tags:
+      - Signature
 swagger: "2.0"

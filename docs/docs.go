@@ -130,6 +130,46 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/sign/hmacsha512": {
+            "post": {
+                "description": "Signature message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "Signature"
+                ],
+                "summary": "SignMessage",
+                "parameters": [
+                    {
+                        "description": "json request: signature text, key",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/http.SignRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -162,6 +202,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "value": {}
+            }
+        },
+        "http.SignRequest": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                }
             }
         },
         "http.ValueIncrementResponse": {

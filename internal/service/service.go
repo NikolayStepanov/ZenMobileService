@@ -1,6 +1,9 @@
 package service
 
-import "context"
+import (
+	"ZenMobileService/internal/service/sign"
+	"context"
+)
 
 type MemoryCache interface {
 	Set(ctx context.Context, key string, value any) error
@@ -12,6 +15,11 @@ type ServicesDependencies struct {
 	Cache MemoryCache
 }
 
+type SignatureServicer interface {
+	GenerateSignature(ctx context.Context, text, key string) (string, error)
+	ValidSignature(ctx context.Context, signature, text, key string) (bool, error)
+}
+
 type CacheServicer interface {
 	IncrementValueByKey(ctx context.Context, key string, incrementValue int64) (int64, error)
 	SetValueByKey(ctx context.Context, key string, value any) error
@@ -20,9 +28,11 @@ type CacheServicer interface {
 
 type Services struct {
 	CacheService CacheServicer
+	SignService  SignatureServicer
 }
 
 func NewServices(deps ServicesDependencies) *Services {
 	cacheService := NewCacheService(deps.Cache)
-	return &Services{CacheService: cacheService}
+	signService := sign.NewSignService()
+	return &Services{CacheService: cacheService, SignService: signService}
 }

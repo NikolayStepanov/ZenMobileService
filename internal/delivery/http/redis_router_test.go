@@ -33,7 +33,7 @@ func TestValidateIncrementRequestError(t *testing.T) {
 				Key:   "age",
 				Value: 0,
 			},
-			expectedError: ErrEmptyIncrementValue,
+			expectedError: ErrEmptyValue,
 		},
 	}
 	for _, test := range tests {
