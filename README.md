@@ -2,7 +2,7 @@
 
 # ZenMobile Service
 
-Учебный проект для знакомства с *Redis*, *PostgreSQL*,  шифрование *HMAC-SHA-512*
+Учебный проект для знакомства с *Redis*, *PostgreSQL*, *HMAC-SHA-512*
 
 ### Redis
 
@@ -104,22 +104,23 @@
 
 1. Чтобы подписать сообщение, нужно отправить запрос к сервису
 
-```http
-POST /sign/hmacsha512 HTTP/1.1
-Content-Type: application/json; charset=utf-8
-Host: localhost:8080
-```
+   ```http
+   POST /sign/hmacsha512 HTTP/1.1
+   Content-Type: application/json; charset=utf-8
+   Host: localhost:8080
+   ```
 
-Тело запроса в формате JSON
+   Тело запроса в формате JSON
 
-```json
-{
-	"text": "test",
-	"key": "test123"
-}
-```
+   ```json
+   {
+       "text": "test",
+       "key": "test123"
+   }
+   ```
 
-Если операция подписи выполнена успешно, получаете ответ такого формата:
+   Если операция подписи выполнена успешно, получаете ответ такого формата:
+
 
 ```tex
 9f7a0e6c7f4e026f5d8b3d2f6b652ba8a66a3c7e8b7c4dacc8a8e709f8ffbc63c4f499ae8d3c7b4aa3f73b4a5b3c273dc1d1adfb7c6c6e3e9fad9ecc9d347bc
