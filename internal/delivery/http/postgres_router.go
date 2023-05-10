@@ -7,10 +7,12 @@ import (
 	"github.com/go-chi/render"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 )
 
 const (
-	usersRoute = "/users"
+	usersRoute   = "/users"
+	getUserRoute = "/{userID}"
 )
 
 var (
@@ -26,9 +28,16 @@ type UserCreateResponse struct {
 	Id int `json:"id"`
 }
 
+type UserInformationResponse struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+	Age  int    `json:"age"`
+}
+
 func (h *Handler) initPostgresRoutes() *chi.Mux {
 	postgresRouter := chi.NewRouter()
 	postgresRouter.Post(usersRoute, h.CreateUser)
+	postgresRouter.Get(usersRoute+getUserRoute, h.GetUserInformation)
 	return postgresRouter
 }
 
@@ -53,6 +62,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	userCreateResponse := &UserCreateResponse{}
 	user := domain.User{}
 	userId := 0
+
 	err := render.Decode(r, &userCreateRequest)
 	if err != nil {
 		log.Errorf("can't parse request: %s", err.Error())
@@ -76,4 +86,36 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	userCreateResponse.Id = userId
 	render.Status(r, http.StatusCreated)
 	render.JSON(w, r, userCreateResponse)
+}
+
+// @Summary GetUserInformation
+// @Description Getting information about the user
+// @Tags Postgres
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} UserInformationResponse
+// @Failure 400 {object} ErrResponse
+// @Router /postgres/users/{id} [get]
+func (h *Handler) GetUserInformation(w http.ResponseWriter, r *http.Request) {
+	userInformationResponse := &UserInformationResponse{}
+
+	userID, err := strconv.Atoi(chi.URLParam(r, "userID"))
+	if err != nil {
+		render.Render(w, r, ErrInvalidRequest(err))
+		return
+	}
+
+	user, err := h.services.UsersService.GetUser(r.Context(), userID)
+	if err != nil {
+		render.Render(w, r, ErrInvalidRequest(err))
+		return
+	}
+
+	userInformationResponse.Id = user.ID()
+	userInformationResponse.Age = int(user.Age())
+	userInformationResponse.Name = user.Name()
+
+	render.Status(r, http.StatusOK)
+	render.JSON(w, r, userInformationResponse)
 }

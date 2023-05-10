@@ -39,6 +39,15 @@ definitions:
       id:
         type: integer
     type: object
+  http.UserInformationResponse:
+    properties:
+      age:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   http.ValueIncrementResponse:
     properties:
       value:
@@ -79,6 +88,31 @@ paths:
           schema:
             $ref: '#/definitions/http.ErrResponse'
       summary: CreateUser
+      tags:
+      - Postgres
+  /postgres/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Getting information about the user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UserInformationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: GetUserInformation
       tags:
       - Postgres
   /redis/:
