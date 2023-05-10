@@ -9,10 +9,13 @@ services:
     depends_on:
       cache:
         condition: service_healthy
+      db:
+        condition: service_healthy
     environment:
       REDIS_PASSWORD: redis
     links:
       - cache
+      - db
     volumes:
       - ./:/src
   cache:
@@ -29,6 +32,25 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass redis
     volumes:
       - cache:/data
+  db:
+    container_name: db
+    image: postgres:latest
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 1s
+      timeout: 1s
+      retries: 5
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
 volumes:
   cache:
+    driver: local
+  db-data:
     driver: local

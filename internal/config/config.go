@@ -9,13 +9,23 @@ import (
 
 type (
 	Config struct {
-		Redis RedisConfig
+		Redis    RedisConfig
+		Postgres PostgresConfig
 	}
 
 	RedisConfig struct {
 		Host     string `mapstructure:"host"`
 		Port     string `mapstructure:"port"`
 		Password string `mapstructure:"password"`
+	}
+
+	PostgresConfig struct {
+		Username string `mapstructure:"username"`
+		Password string `mapstructure:"password"`
+		Host     string `mapstructure:"host"`
+		Port     string `mapstructure:"port"`
+		DBName   string `mapstructure:"dbname"`
+		SSLMode  string `mapstructure:"sslmode"`
 	}
 )
 
@@ -35,12 +45,12 @@ func (cfg *Config) Init(path string) error {
 }
 
 func (cfg *Config) InitConfigFile(path string) error {
-
-	if err := parseConfigFile(path); err != nil {
+	err := parseConfigFile(path)
+	if err != nil {
 		return err
 	}
-
-	if err := unmarshal(cfg); err != nil {
+	err = unmarshal(cfg)
+	if err != nil {
 		return err
 	}
 
@@ -60,7 +70,13 @@ func (cfg *Config) setFromEnv() {
 }
 
 func unmarshal(cfg *Config) error {
-	if err := viper.UnmarshalKey("redis", &cfg.Redis); err != nil {
+	err := viper.UnmarshalKey("redis", &cfg.Redis)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	err = viper.UnmarshalKey("postgresql", &cfg.Postgres)
+	if err != nil {
 		log.Error(err)
 		return err
 	}

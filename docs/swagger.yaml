@@ -27,6 +27,18 @@ definitions:
       text:
         type: string
     type: object
+  http.UserCreateRequest:
+    properties:
+      age:
+        type: integer
+      name:
+        type: string
+    type: object
+  http.UserCreateResponse:
+    properties:
+      id:
+        type: integer
+    type: object
   http.ValueIncrementResponse:
     properties:
       value:
@@ -43,6 +55,32 @@ info:
   title: Zen Mobile Service
   version: "0.1"
 paths:
+  /postgres/users:
+    post:
+      consumes:
+      - application/json
+      description: Сreating a new user
+      parameters:
+      - description: json information user
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.UserCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UserCreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: CreateUser
+      tags:
+      - Postgres
   /redis/:
     post:
       consumes:
