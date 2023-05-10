@@ -54,7 +54,7 @@ func validateCreateUserReq(reqCreateUser *UserCreateRequest) error {
 // @Accept json
 // @Produce json
 // @Param input body UserCreateRequest true "json information user"
-// @Success 200 {object} UserCreateResponse
+// @Success 201 {object} UserCreateResponse
 // @Failure 400 {object} ErrResponse
 // @Router /postgres/users [post]
 func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {

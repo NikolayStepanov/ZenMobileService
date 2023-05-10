@@ -85,8 +85,6 @@ func (ud *UserPostgres) CreateUser(ctx context.Context, user domain.User) (int, 
 				return id, err
 			}
 		}
-		return id, err
 	}
-
 	return id, err
 }
