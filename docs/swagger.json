@@ -1,10 +1,10 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Service use Redis",
+        "description": "Service uses Redis, PostgreSQL, HMAC-SHA-512",
         "title": "Zen Mobile Service",
         "contact": {},
-        "version": "0.1"
+        "version": "v0.3"
     },
     "host": "localhost:8080",
     "basePath": "/",

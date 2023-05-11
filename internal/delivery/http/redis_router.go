@@ -16,6 +16,7 @@ const (
 )
 
 var (
+	ErrParsingKey     = errors.New("can't parse the key")
 	ErrIncrementValue = errors.New("can't increment value by key")
 	ErrSave           = errors.New("can't save value by key")
 	ErrRead           = errors.New("can't read value by key")
@@ -169,7 +170,7 @@ func (h *Handler) ReadValueByKey(w http.ResponseWriter, r *http.Request) {
 	err = validateKeyParam(key)
 	if err != nil {
 		log.Errorf("bad req: %s: %s", key, err.Error())
-		render.Render(w, r, ErrInvalidRequest(err))
+		render.Render(w, r, ErrInvalidRequest(ErrParsingKey))
 		return
 	}
 

@@ -1,7 +1,7 @@
 package http
 
 import (
-	service "ZenMobileService/internal/service"
+	"ZenMobileService/internal/service"
 	mock_service "ZenMobileService/internal/service/mocks"
 	"bytes"
 	"github.com/golang/mock/gomock"
@@ -206,6 +206,15 @@ func TestHandler_ReadValueByKey(t *testing.T) {
 			},
 			expectedStatusCode:   400,
 			expectedResponseBody: `{"status":"Invalid request.","error":"can't read value by key"}` + "\n",
+		},
+		{
+			name:         "ValidatedSuccess",
+			inputRequest: "age",
+			mockBehavior: func(r *mock_service.MockCacheServicer, inputRequest string) {
+				r.EXPECT().GetValueByKey(gomock.Any(), inputRequest).Return(27, nil)
+			},
+			expectedStatusCode:   200,
+			expectedResponseBody: `{"value":27}` + "\n",
 		},
 	}
 

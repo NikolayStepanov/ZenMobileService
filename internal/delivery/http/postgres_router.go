@@ -16,7 +16,10 @@ const (
 )
 
 var (
-	ErrEmptyName = errors.New("name can't be empty")
+	ErrParsingUserID = errors.New("can't parse the user ID")
+	ErrEmptyName     = errors.New("name can't be empty")
+	ErrCreateUser    = errors.New("can't create user")
+	ErrGetUser       = errors.New("can't get information user")
 )
 
 type UserCreateRequest struct {
@@ -80,7 +83,8 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	user.SetAge(userCreateRequest.Age)
 	userId, err = h.services.UsersService.CreateUser(r.Context(), user)
 	if err != nil {
-		render.Render(w, r, ErrInvalidRequest(err))
+		log.Errorf("can't create user: %v: %s", userCreateRequest, err.Error())
+		render.Render(w, r, ErrInvalidRequest(ErrCreateUser))
 		return
 	}
 	userCreateResponse.Id = userId
@@ -102,13 +106,15 @@ func (h *Handler) GetUserInformation(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := strconv.Atoi(chi.URLParam(r, "userID"))
 	if err != nil {
-		render.Render(w, r, ErrInvalidRequest(err))
+		log.Errorf("can't parse request: %s", err.Error())
+		render.Render(w, r, ErrInvalidRequest(ErrParsingUserID))
 		return
 	}
 
 	user, err := h.services.UsersService.GetUser(r.Context(), userID)
 	if err != nil {
-		render.Render(w, r, ErrInvalidRequest(err))
+		log.Errorf("can't get user %v: %s", userID, err.Error())
+		render.Render(w, r, ErrInvalidRequest(ErrGetUser))
 		return
 	}
 

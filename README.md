@@ -6,7 +6,7 @@
 
 ### Redis
 
-Клиент Redis также хранится в отдельном контейнере Docker.
+Клиент Redis хранится в отдельном контейнере Docker.
 
 Реализовано подключение к Redis указывая хост и порт в конфигурационном файле или передать в качестве параметров при запуске сервиса (-host и -port).
 
@@ -124,4 +124,123 @@
 
 ```tex
 9f7a0e6c7f4e026f5d8b3d2f6b652ba8a66a3c7e8b7c4dacc8a8e709f8ffbc63c4f499ae8d3c7b4aa3f73b4a5b3c273dc1d1adfb7c6c6e3e9fad9ecc9d347bc
+
 ```
+
+### PostgreSQL
+
+PostgreSQL хранится в отдельном контейнере Docker.
+
+Реализовано подключение к PostgreSQL указывая хост, порт, имя базы данных, имя пользователя и пароль в конфигурационном файле.
+
+#### Функционал
+
+1. Создание таблицы users в базе данных PostgreSQL.
+
+2. Добавление записи пользователя в базу данных.
+
+3. Получение информации о пользователе.
+
+#### Руководство пользователя
+
+1. Чтобы сохранить данные пользователя в PostgreSQL, нужно отправить запрос к сервису:
+
+   ```http
+   POST /postgres/users/ HTTP/1.1
+   Content-Type: application/json; charset=utf-8
+   Host: localhost:8080
+   ```
+
+   Тело запроса в формате JSON
+
+   ```json
+   {
+       "name": "Alex",
+       "age": 21
+   }
+   ```
+
+   В ответ сервис должен вернуть id пользователя в PostgreSQL:
+
+   Пример ответа:
+
+   ```json
+   {
+       "id": 1
+   }
+   ```
+
+2. Чтобы получить информацию о пользователе по id сделайте запрос:
+
+   ```http
+   GET /postgres/userID HTTP/1.1
+   Host: localhost:8080
+   ```
+
+    После /postgres/ указывается id пользователя информацию которого хотите получить.
+
+   Пример ответа от сервиса:
+
+   ```json
+   {
+       "id": 1,
+       "name": "Alex",
+       "age": 21
+   }
+   ```
+
+### Запуск сервиса
+
+Создание и запуск сервиса в Docker
+
+```makefile
+make build
+make up
+```
+
+### Тестирование
+
+Для сервиса написаны unit тесты:
+
+Один раз протестировать:
+
+```makefile
+make test
+```
+
+Запсутить тесты сто раз:
+
+```makefile
+make test100
+```
+
+Посмотреть покрытие тестами:
+
+```makefile
+make cover
+```
+
+### Документация 
+
+У сервиса есть описание API. Используется [Swagger](https://github.com/swaggo/http-swagger) 
+
+Генерация документации:
+
+```makefile
+make swag
+```
+
+Просмотреть описание API:
+
+[SwaggerURL](http://localhost:8080/swagger/index.html)
+
+### Используемые фреймворкики, концепции
+
+- [viper](https://github.com/spf13/viper)
+- [go-chi/chi](https://github.com/go-chi/chi)
+- [go-redis](https://github.com/redis/go-redis)
+- [squirrel](https://github.com/Masterminds/squirrel)
+- [pgx](https://github.com/jackc/pgx)
+- [logrus](https://github.com/sirupsen/logrus)
+- [gomock](https://github.com/golang/mock)
+
