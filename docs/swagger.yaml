@@ -1,0 +1,219 @@
+basePath: /
+definitions:
+  http.ErrResponse:
+    properties:
+      error:
+        type: string
+      status:
+        type: string
+    type: object
+  http.IncrementRequest:
+    properties:
+      key:
+        type: string
+      value:
+        type: integer
+    type: object
+  http.SaveValueRequest:
+    properties:
+      key:
+        type: string
+      value: {}
+    type: object
+  http.SignRequest:
+    properties:
+      key:
+        type: string
+      text:
+        type: string
+    type: object
+  http.UserCreateRequest:
+    properties:
+      age:
+        type: integer
+      name:
+        type: string
+    type: object
+  http.UserCreateResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  http.UserInformationResponse:
+    properties:
+      age:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  http.ValueIncrementResponse:
+    properties:
+      value:
+        type: integer
+    type: object
+  http.ValueResponse:
+    properties:
+      value: {}
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Service uses Redis, PostgreSQL, HMAC-SHA-512
+  title: Zen Mobile Service
+  version: v0.3
+paths:
+  /postgres/users:
+    post:
+      consumes:
+      - application/json
+      description: Сreating a new user
+      parameters:
+      - description: json information user
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.UserCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.UserCreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: CreateUser
+      tags:
+      - Postgres
+  /postgres/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Getting information about the user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UserInformationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: GetUserInformation
+      tags:
+      - Postgres
+  /redis/:
+    post:
+      consumes:
+      - application/json
+      description: Saving a new key with a value
+      parameters:
+      - description: 'json request: save value'
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.SaveValueRequest'
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: SaveValueByKey
+      tags:
+      - Redis
+  /redis/{key}:
+    get:
+      description: Getting value by key
+      parameters:
+      - description: key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.ValueResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: ReadValueByKey
+      tags:
+      - Redis
+  /redis/incr:
+    post:
+      consumes:
+      - application/json
+      description: Increment value by key if value is stored in redis
+      parameters:
+      - description: 'json request: increment value by key'
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.IncrementRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.ValueIncrementResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: IncrementValueByKey
+      tags:
+      - Redis
+  /sign/hmacsha512:
+    post:
+      consumes:
+      - application/json
+      description: Signature message
+      parameters:
+      - description: 'json request: signature text, key'
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.SignRequest'
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: SignMessage
+      tags:
+      - Signature
+swagger: "2.0"
