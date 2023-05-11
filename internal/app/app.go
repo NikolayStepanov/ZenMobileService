@@ -3,6 +3,8 @@ package app
 import (
 	"ZenMobileService/internal/config"
 	httpDelivery "ZenMobileService/internal/delivery/http"
+	"ZenMobileService/internal/repository"
+	"ZenMobileService/internal/repository/postgres"
 	"ZenMobileService/internal/server"
 	"ZenMobileService/internal/service"
 	"ZenMobileService/internal/service/redis"
@@ -19,11 +21,19 @@ func Run(configPath string) {
 	cfg := new(config.Config)
 	cfg.Init(configPath)
 
-	redisCache, err := redis.NewRedisCache(cfg)
+	redisCache, err := redis.NewRedisCache(&cfg.Redis)
 	if err != nil {
 		log.Error(err)
 	}
-	services := service.NewServices(service.ServicesDependencies{Cache: redisCache})
+	defer redisCache.Client.Close()
+
+	postgresDB, err := postgres.NewPostgresDB(ctx, &cfg.Postgres)
+	if err != nil {
+		log.Error(err)
+	}
+	defer postgresDB.Close(ctx)
+	userRepository := repository.NewRepository(postgresDB)
+	services := service.NewServices(service.ServicesDependencies{Cache: redisCache, Repos: *userRepository})
 	handlers := httpDelivery.NewHandler(services)
 
 	wg := sync.WaitGroup{}
@@ -41,7 +51,7 @@ func Run(configPath string) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		if err := srv.Stop(context.Background()); err != nil {
+		if err = srv.Stop(context.Background()); err != nil {
 			log.Printf("error occured on server shutting down: %s", err.Error())
 		}
 	}()

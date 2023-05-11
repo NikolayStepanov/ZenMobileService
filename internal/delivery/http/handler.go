@@ -12,10 +12,11 @@ import (
 )
 
 const (
-	redisRoute   = "/redis"
-	signRoute    = "/sign"
-	swaggerRoute = "/swagger/*"
-	swaggerURL   = "http://localhost:8080/swagger/doc.json"
+	redisRoute    = "/redis"
+	signRoute     = "/sign"
+	postgresRoute = "/postgres"
+	swaggerRoute  = "/swagger/*"
+	swaggerURL    = "http://localhost:8080/swagger/doc.json"
 )
 
 type Handler struct {
@@ -41,6 +42,7 @@ func (h *Handler) Init() *chi.Mux {
 func (h *Handler) MountRoutes(router *chi.Mux) {
 	router.Mount(redisRoute, h.initRedisRoutes())
 	router.Mount(signRoute, h.initSignRoutes())
+	router.Mount(postgresRoute, h.initPostgresRoutes())
 	router.Get(swaggerRoute, httpSwagger.Handler(
 		httpSwagger.URL(swaggerURL),
 	))

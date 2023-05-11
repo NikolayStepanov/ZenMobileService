@@ -1,14 +1,92 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Service use Redis",
+        "description": "Service uses Redis, PostgreSQL, HMAC-SHA-512",
         "title": "Zen Mobile Service",
         "contact": {},
-        "version": "0.1"
+        "version": "v0.3"
     },
     "host": "localhost:8080",
     "basePath": "/",
     "paths": {
+        "/postgres/users": {
+            "post": {
+                "description": "Сreating a new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Postgres"
+                ],
+                "summary": "CreateUser",
+                "parameters": [
+                    {
+                        "description": "json information user",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/http.UserCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/http.UserCreateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/postgres/users/{id}": {
+            "get": {
+                "description": "Getting information about the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Postgres"
+                ],
+                "summary": "GetUserInformation",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/http.UserInformationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/redis/": {
             "post": {
                 "description": "Saving a new key with a value",
@@ -204,6 +282,39 @@
                     "type": "string"
                 },
                 "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "http.UserCreateRequest": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "http.UserCreateResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "http.UserInformationResponse": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }

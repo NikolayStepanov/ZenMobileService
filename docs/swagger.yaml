@@ -27,6 +27,27 @@ definitions:
       text:
         type: string
     type: object
+  http.UserCreateRequest:
+    properties:
+      age:
+        type: integer
+      name:
+        type: string
+    type: object
+  http.UserCreateResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  http.UserInformationResponse:
+    properties:
+      age:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   http.ValueIncrementResponse:
     properties:
       value:
@@ -39,10 +60,61 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: Service use Redis
+  description: Service uses Redis, PostgreSQL, HMAC-SHA-512
   title: Zen Mobile Service
-  version: "0.1"
+  version: v0.3
 paths:
+  /postgres/users:
+    post:
+      consumes:
+      - application/json
+      description: Сreating a new user
+      parameters:
+      - description: json information user
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.UserCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/http.UserCreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: CreateUser
+      tags:
+      - Postgres
+  /postgres/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Getting information about the user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.UserInformationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrResponse'
+      summary: GetUserInformation
+      tags:
+      - Postgres
   /redis/:
     post:
       consumes:
